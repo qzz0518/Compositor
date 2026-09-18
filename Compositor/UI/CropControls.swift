@@ -9,7 +9,10 @@ struct CropControls: View {
         HStack(spacing: 14) {
             Text("Crop").font(ToolHeaderStyle.titleFont)
             Picker("Ratio", selection: $session.cropRatioChoice) {
-                ForEach(["Free", "Original", "1:1", "4:3", "16:9"], id: \.self) { Text($0) }
+                // The English choice is what's stored and matched; only its label is translated.
+                Text("Free").tag("Free")
+                Text("Original").tag("Original")
+                ForEach(["1:1", "4:3", "16:9"], id: \.self) { Text($0) }
             }.frame(width: 170)
                 .onChange(of: session.cropRatioChoice) { _, _ in session.changeCropRatio() }
             if let rect = session.cropRect {

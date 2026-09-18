@@ -6,11 +6,15 @@ struct BlendModePicker: NSViewRepresentable {
     func makeCoordinator() -> Coordinator { Coordinator(session: session) }
     func makeNSView(context: Context) -> NSPopUpButton {
         let button = NSPopUpButton(frame: .zero, pullsDown: false)
-        button.addItems(withTitles: LayerBlendMode.allCases.map(\.rawValue))
+        // Localized titles; each item carries its mode, so nothing is looked up by title.
+        for mode in LayerBlendMode.allCases {
+            button.addItem(withTitle: mode.localizedName)
+            button.lastItem?.representedObject = mode
+        }
         button.menu?.delegate = context.coordinator
         button.target = context.coordinator
         button.action = #selector(Coordinator.choose(_:))
-        button.setAccessibilityLabel("Blend mode")
+        button.setAccessibilityLabel(String(localized: "Blend mode"))
         // A capsule like the SwiftUI buttons and menus (`roundedControls`), which don't reach this AppKit pop-up.
         // Before macOS 26 AppKit has no border shape, so the pop-up keeps its standard bezel.
         if #available(macOS 26.0, *) { button.borderShape = .capsule }
@@ -19,12 +23,16 @@ struct BlendModePicker: NSViewRepresentable {
     func updateNSView(_ button: NSPopUpButton, context: Context) {
         button.isEnabled = session.canEditAppearance
         if !context.coordinator.tracking {
-            button.selectItem(withTitle: (session.activeLayer?.blendMode ?? .normal).rawValue)
+            Self.select(session.activeLayer?.blendMode ?? .normal, in: button)
         }
     }
     static func dismantleNSView(_ button: NSPopUpButton, coordinator: Coordinator) {
         if coordinator.tracking { coordinator.session.previewBlendMode(nil, for: nil) }
         button.menu?.delegate = nil
+    }
+    static func mode(of item: NSMenuItem?) -> LayerBlendMode? { item?.representedObject as? LayerBlendMode }
+    static func select(_ mode: LayerBlendMode, in button: NSPopUpButton) {
+        button.select(button.itemArray.first { Self.mode(of: $0) == mode })
     }
     final class Coordinator: NSObject, NSMenuDelegate {
         let session: EditorSession
@@ -38,7 +46,7 @@ struct BlendModePicker: NSViewRepresentable {
             highlightedMode = nil
         }
         func menu(_ menu: NSMenu, willHighlight item: NSMenuItem?) {
-            let mode = item.flatMap { LayerBlendMode(rawValue: $0.title) }
+            let mode = BlendModePicker.mode(of: item)
             if let mode { highlightedMode = mode }
             session.previewBlendMode(mode, for: layerID)
         }
@@ -48,9 +56,9 @@ struct BlendModePicker: NSViewRepresentable {
         }
         @objc func choose(_ button: NSPopUpButton) {
             guard session.activeLayerID == layerID,
-                  let mode = highlightedMode ?? button.selectedItem.flatMap({ LayerBlendMode(rawValue: $0.title) }) else { return }
+                  let mode = highlightedMode ?? BlendModePicker.mode(of: button.selectedItem) else { return }
             session.setLayerBlendMode(mode)
-            button.selectItem(withTitle: mode.rawValue)
+            BlendModePicker.select(mode, in: button)
             highlightedMode = nil
             session.refreshCanvasPreview?()
         }

@@ -17,7 +17,7 @@ struct LevelsSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Picker("Channel", selection: Binding(get: { settings.channel }, set: { channel in update { $0.channel = channel } })) {
-                ForEach(LevelsChannel.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                ForEach(LevelsChannel.allCases, id: \.self) { Text($0.localizedName).tag($0) }
             }.frame(width: 180)
             VStack(spacing: 0) {
                 histogram.frame(height: 150).background(.black.opacity(0.25))
@@ -27,20 +27,20 @@ struct LevelsSheet: View {
                 handles(output: false).frame(height: 20)
             }
             HStack {
-                field("Input black", value(\.black), decimals: 0)
+                field("Input black", id: "Inputblack", value(\.black), decimals: 0)
                 Spacer()
-                field("Gamma", value(\.gamma), decimals: 2)
+                field("Gamma", id: "Gamma", value(\.gamma), decimals: 2)
                 Spacer()
-                field("Input white", value(\.white), decimals: 0)
+                field("Input white", id: "Inputwhite", value(\.white), decimals: 0)
             }
             VStack(spacing: 0) {
                 LinearGradient(colors: [.black, .white], startPoint: .leading, endPoint: .trailing).frame(height: 14)
                 handles(output: true).frame(height: 20)
             }
             HStack {
-                field("Output black", value(\.outputBlack), decimals: 0)
+                field("Output black", id: "Outputblack", value(\.outputBlack), decimals: 0)
                 Spacer()
-                field("Output white", value(\.outputWhite), decimals: 0)
+                field("Output white", id: "Outputwhite", value(\.outputWhite), decimals: 0)
             }
             HStack {
                 Text("Sample").font(.caption).foregroundStyle(.secondary)
@@ -49,19 +49,19 @@ struct LevelsSheet: View {
                         edit?.sampleMode = edit?.sampleMode == mode ? nil : mode
                         session.brushRevision += 1
                     } label: {
-                        Label(mode.rawValue, systemImage: "eyedropper")
+                        Label(mode.localizedName, systemImage: "eyedropper")
                     }.tint(edit?.sampleMode == mode ? .accentColor : .secondary)
                 }
             }
             if let mode = edit?.sampleMode {
-                Text("Click the original layer to set \(mode.rawValue.lowercased()). Click the eyedropper again to stop.")
+                Text(sampleHint(mode))
                     .font(.caption).foregroundStyle(.secondary)
             }
             VStack(alignment: .leading, spacing: 6) {
                 Text("Auto").font(.caption).foregroundStyle(.secondary)
                 HStack {
                     ForEach(LevelsAuto.allCases, id: \.self) { mode in
-                        Button(mode.rawValue) { session.autoLevels(mode) }
+                        Button(mode.localizedName) { session.autoLevels(mode) }
                     }
                 }.disabled(edit?.histogramReady != true)
             }
@@ -86,12 +86,19 @@ struct LevelsSheet: View {
         .padding(24).frame(width: 440).fixedSize()
         .disabled(edit?.committing == true)
     }
-    private func field(_ name: String, _ binding: Binding<Double>, decimals: Int) -> some View {
+    private func sampleHint(_ mode: LevelsSample) -> LocalizedStringKey {
+        switch mode {
+        case .black: "Click the original layer to set black. Click the eyedropper again to stop."
+        case .gray: "Click the original layer to set gray. Click the eyedropper again to stop."
+        case .white: "Click the original layer to set white. Click the eyedropper again to stop."
+        }
+    }
+    private func field(_ title: LocalizedStringKey, id: String, _ binding: Binding<Double>, decimals: Int) -> some View {
         VStack(alignment: .leading, spacing: 5) {
-            Text(name).font(.caption).foregroundStyle(.secondary)
-            TextField(name, value: binding, format: .number.precision(.fractionLength(decimals)))
+            Text(title).font(.caption).foregroundStyle(.secondary)
+            TextField(title, value: binding, format: .number.precision(.fractionLength(decimals)))
                 .textFieldStyle(.roundedBorder).multilineTextAlignment(.trailing).frame(width: 80)
-                .accessibilityIdentifier("levels\(name.replacingOccurrences(of: " ", with: ""))")
+                .accessibilityIdentifier("levels\(id)")
         }
     }
     private var histogram: some View {
@@ -107,7 +114,7 @@ struct LevelsSheet: View {
             }
             let color: Color = switch settings.channel { case .rgb: .gray; case .red: .red; case .green: .green; case .blue: .blue }
             context.fill(path, with: .color(color))
-        }.accessibilityLabel("Original \(settings.channel.rawValue) histogram")
+        }.accessibilityLabel("Original \(settings.channel.localizedName) histogram")
         .help("Linear histogram with automatic vertical scaling. Tall spikes may extend beyond the graph; all tones from 0 to 255 remain included.")
     }
     private func handles(output: Bool) -> some View {
@@ -115,7 +122,8 @@ struct LevelsSheet: View {
             let gammaPosition = current.black + (current.white - current.black) * pow(0.5, current.gamma)
             let positions = output ? [current.outputBlack, current.outputWhite] : [current.black, gammaPosition, current.white]
             ForEach(positions.indices, id: \.self) { index in
-                let names = output ? ["Output black", "Output white"] : ["Input black", "Gamma", "Input white"]
+                let names = output ? [String(localized: "Output black"), String(localized: "Output white")]
+                    : [String(localized: "Input black"), String(localized: "Gamma"), String(localized: "Input white")]
                 Image(systemName: "triangle.fill").font(.system(size: 12))
                     .foregroundStyle(index == 0 ? Color.black : index == positions.count - 1 ? .white : .gray)
                     .shadow(color: .gray, radius: 0.5)

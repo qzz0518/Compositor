@@ -32,7 +32,7 @@ struct FilterSheet: View {
                     .fixedSize(horizontal: false, vertical: true)
                 Picker("Quality", selection: Binding(get: { settings.backgroundQuality },
                                                      set: { new in update { $0.backgroundQuality = new } })) {
-                    ForEach(BackgroundQuality.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                    ForEach(BackgroundQuality.allCases, id: \.self) { Text($0.localizedName).tag($0) }
                 }
                 .pickerStyle(.segmented).labelsHidden()
                 .help("Basic is quick; Advanced refines the mask against the layer's own detail, for hair and fur")
@@ -101,7 +101,7 @@ struct FilterSheet: View {
     }
 
     /// A slider plus an exact field. Logarithmic sliders give the small values used most most of the travel.
-    private func control(_ title: String, _ key: WritableKeyPath<FilterSettings, Double>, range: ClosedRange<Double>,
+    private func control(_ title: LocalizedStringKey, _ key: WritableKeyPath<FilterSettings, Double>, range: ClosedRange<Double>,
                          unit: String, decimals: Int, logarithmic: Bool) -> some View {
         let step = pow(10, Double(decimals))
         return HStack(spacing: 10) {
@@ -133,8 +133,8 @@ struct GradientMapControls: View {
                 .overlay { RoundedRectangle(cornerRadius: 4, style: .continuous).strokeBorder(.black.opacity(0.35)) }
                 .accessibilityHidden(true)
             HStack(spacing: 20) {
-                swatch("Shadows", settings.shadows) { pick(false) }
-                swatch("Highlights", settings.highlights) { pick(true) }
+                swatch(String(localized: "Shadows"), help: String(localized: "Choose the shadows color"), settings.shadows) { pick(false) }
+                swatch(String(localized: "Highlights"), help: String(localized: "Choose the highlights color"), settings.highlights) { pick(true) }
                 Spacer()
             }
             Toggle("Reverse", isOn: $settings.reversed)
@@ -143,7 +143,7 @@ struct GradientMapControls: View {
 
     private func color(_ value: AdjustmentColor) -> Color { Color(.sRGB, red: value.red, green: value.green, blue: value.blue) }
 
-    private func swatch(_ title: String, _ value: AdjustmentColor, action: @escaping () -> Void) -> some View {
+    private func swatch(_ title: String, help: String, _ value: AdjustmentColor, action: @escaping () -> Void) -> some View {
         let shape = RoundedRectangle(cornerRadius: 6, style: .continuous)
         return HStack(spacing: 8) {
             Button(action: action) {
@@ -155,7 +155,7 @@ struct GradientMapControls: View {
                     .contentShape(shape)
             }
             .buttonStyle(.plain)
-            .help("Choose the \(title.lowercased()) color")
+            .help(help)
             .accessibilityLabel("\(title) color")
             Text(title)
         }

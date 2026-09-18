@@ -23,7 +23,7 @@ struct TransformInspector: View {
                 TransformValueField(label: "H", value: value.size.height) { resize($0, width: false) }.frame(width: 85)
                 Toggle(isOn: $session.locksTransformRatio) { Image(systemName: "link") }
                     .toggleStyle(.button).help("Lock aspect ratio")
-                TransformValueField(label: "Scale", suffix: "%", value: value.scalePercent(pixelSize: pixelSize)) { number in
+                TransformValueField(label: String(localized: "Scale"), identifier: "Scale", suffix: "%", value: value.scalePercent(pixelSize: pixelSize)) { number in
                     change { value in
                         guard number > 0 else { return }
                         value = value.scaled(toPercent: number, pixelSize: pixelSize)
@@ -33,7 +33,7 @@ struct TransformInspector: View {
                 Picker("Sampling", selection: Binding(get: { value.sampling }, set: { sampling in
                     change { $0.sampling = sampling }
                 })) {
-                    ForEach(LayerSampling.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                    ForEach(LayerSampling.allCases, id: \.self) { Text($0.localizedName).tag($0) }
                 }.frame(width: 170)
                 Button("Flip H") { change { $0.flipX.toggle() } }
                 Button("Flip V") { change { $0.flipY.toggle() } }
@@ -76,6 +76,8 @@ struct TransformInspector: View {
 
 private struct TransformValueField: View {
     let label: String
+    /// Names the field for UI tests when the label is translated.
+    var identifier: String? = nil
     var suffix: String? = nil
     let value: CGFloat
     let change: (CGFloat) -> Void
@@ -87,7 +89,7 @@ private struct TransformValueField: View {
             Text(label).font(.caption).foregroundStyle(.secondary)
             TextField(label, text: $text)
                 .textFieldStyle(.roundedBorder).focused($focused)
-                .accessibilityIdentifier("transform\(label)")
+                .accessibilityIdentifier("transform\(identifier ?? label)")
                 .onAppear { sync() }
                 .onChange(of: value) { if !focused { sync() } }
                 .onChange(of: focused) { if !focused { sync() } }
