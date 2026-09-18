@@ -1,5 +1,13 @@
 # Compositor
 
+> **macOS 15 compatible fork** of [robbietilton/Compositor](https://github.com/robbietilton/Compositor). Upstream requires macOS 26.5; this fork runs on **macOS 15 (Sequoia) and later**.
+>
+> - **Deployment target** lowered from macOS 26.5 to 15.0. Upstream uses only three macOS 26 APIs, all cosmetic: `NSPopUpButton.borderShape`, `ToolbarSpacer` and `sharedBackgroundVisibility`. They're now behind `#available(macOS 26.0, *)`. On macOS 15 the blend-mode pop-up keeps the standard bezel and the toolbar uses the system spacing; all editing features are unchanged.
+> - **App icon** redrawn to the standard macOS template: an 824 × 824 rounded rectangle with a drop shadow, centered on a 1024 canvas. Upstream ships a full-bleed square, which macOS 26 masks itself but earlier versions show as an oversized square in the Dock and Finder.
+> - **Builds with Xcode 26.3**: two expressions that timed out the type checker are split up.
+>
+> **Fork 说明**：上游最低要求 macOS 26.5，本 fork 支持 **macOS 15 及以上**。上游只用到 3 个 macOS 26 专属的外观 API，现已加上版本判断：在 15 上混合模式下拉框保持标准样式，工具栏用系统默认间距，编辑功能不变。图标改为标准 macOS 模板（四周留边、带阴影），修复在旧系统上显示成超大方块的问题。
+
 Adobe Photoshop costs too much and tools like GIMP don’t feel familiar enough for me to stay in flow. That’s why I built Compositor.
 
 The goal was to create a full-featured image editor that is completely free and open source. I use Photoshop for compositing and post-processing, so Compositor is built around that workflow - with the tools needed to create a pixel-perfect final image.
@@ -56,8 +64,8 @@ Because it’s open source, you can download the Xcode project and add, remove, 
 
 ## Requirements
 
-- macOS 26
-- Xcode 26 (to build from source)
+- macOS 15 or later (upstream: macOS 26.5)
+- Xcode 26 (to build from source; tested with 26.3)
 
 ## Building
 
