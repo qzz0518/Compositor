@@ -32,7 +32,7 @@ extension EditorSession {
         var clone: (image: CGImage, offset: CGSize)?
         if tool == .cloneStamp {
             guard let offset = cloneStrokeOffset(at: point) else {
-                brushError = "Option-click where Clone Stamp should copy from first."
+                brushError = String(localized: "Option-click where Clone Stamp should copy from first.")
                 return
             }
             guard let image = cloneSample(document) else { return }
@@ -112,7 +112,7 @@ extension EditorSession {
             mask = original.replacing(ImportedImage(image: try raster.makeImage(), thumbnail: try raster.thumbnail(),
                 name: original.asset.name, raster: raster))
         }
-        beginEdit(stroke.editName ?? (stroke.isMask ? "Paint Mask" : stroke.settings.erasing ? "Erase" : stroke.isBlur ? "Blur" : stroke.clone != nil ? "Clone Stamp" : stroke.settings.healing ? "Spot Healing" : "Brush Stroke"))
+        beginEdit(stroke.editName ?? (stroke.isMask ? String(localized: "Paint Mask") : stroke.settings.erasing ? String(localized: "Erase") : stroke.isBlur ? String(localized: "Blur") : stroke.clone != nil ? String(localized: "Clone Stamp") : stroke.settings.healing ? String(localized: "Spot Healing") : String(localized: "Brush Stroke")))
         if stroke.isMask {
             document?.layers[index].mask = current.mask.map { $0.replacing(result.asset) } ?? LayerMask(asset: result.asset)
         } else {

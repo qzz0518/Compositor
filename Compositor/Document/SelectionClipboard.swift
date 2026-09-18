@@ -124,12 +124,12 @@ extension EditorSession {
         guard canPaste, let document else { return }
         let pasteboard = NSPasteboard.general
         if let clip = pixelClipboard, pasteboard.changeCount == clip.changeCount {
-            addPixelLayer(clip.image, at: clip.origin, name: nextLayerName(), editName: "Paste")
+            addPixelLayer(clip.image, at: clip.origin, name: nextLayerName(), editName: String(localized: "Paste"))
         } else if let external = NSImage(pasteboard: pasteboard)?.cgImage(forProposedRect: nil, context: nil, hints: nil),
                   let image = try? Self.sRGBCopy(of: external) {
             let origin = CGPoint(x: floor((document.size.width - CGFloat(image.width)) / 2),
                                  y: floor((document.size.height - CGFloat(image.height)) / 2))
-            addPixelLayer(image, at: origin, name: nextLayerName(), editName: "Paste")
+            addPixelLayer(image, at: origin, name: nextLayerName(), editName: String(localized: "Paste"))
         } else { NSSound.beep() }
     }
 
@@ -140,17 +140,17 @@ extension EditorSession {
         guard selection != nil else { duplicateActiveLayer(); return }
         do {
             guard let copied = try renderSelectedPixels(from: layer, mask: isMaskSelected) else { NSSound.beep(); return }
-            addPixelLayer(copied.image, at: copied.region.origin, name: nextLayerName(), editName: "Layer via Copy")
+            addPixelLayer(copied.image, at: copied.region.origin, name: nextLayerName(), editName: String(localized: "Layer via Copy"))
         } catch { brushError = error.localizedDescription }
     }
 
     func duplicateActiveLayer() {
         guard canEditLayers, let layer = activeLayer, !layer.isGroup,
               let index = document?.layers.firstIndex(where: { $0.id == layer.id }) else { return }
-        let copy = ImageLayer(id: UUID(), asset: layer.asset, name: "\(layer.name) copy", isVisible: layer.isVisible,
+        let copy = ImageLayer(id: UUID(), asset: layer.asset, name: String(localized: "\(layer.name) copy"), isVisible: layer.isVisible,
                               transform: layer.transform, parentID: layer.parentID, isGroup: false,
                               opacity: layer.opacity, blendMode: layer.blendMode, mask: layer.mask, maskSourceID: layer.maskSourceID, adjustment: layer.adjustment, shape: layer.shape)
-        beginEdit("Duplicate Layer")
+        beginEdit(String(localized: "Duplicate Layer"))
         document?.layers.insert(copy, at: index + 1)
         activeLayerID = copy.id
         endEdit()
@@ -162,7 +162,7 @@ extension EditorSession {
     func duplicateLayer(_ id: UUID, in parent: UUID?, above target: UUID? = nil, atBottom: Bool = false) -> Bool {
         guard canEditLayers, let layer = document?.layers.first(where: { $0.id == id }), !layer.isGroup,
               canPlaceLayer(id, in: parent) else { return false }
-        beginEdit("Duplicate Layer")
+        beginEdit(String(localized: "Duplicate Layer"))
         defer { endEdit() }
         selectLayer(id)
         duplicateActiveLayer()
@@ -190,8 +190,8 @@ extension EditorSession {
     func nextLayerName() -> String {
         let names = Set(document?.layers.map(\.name) ?? [])
         var number = 1
-        while names.contains("Layer \(number)") { number += 1 }
-        return "Layer \(number)"
+        while names.contains(String(localized: "Layer \(number)")) { number += 1 }
+        return String(localized: "Layer \(number)")
     }
 
     /// Normalizes an image from another app to the working sRGB RGBA format.

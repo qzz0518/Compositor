@@ -123,8 +123,8 @@ enum ColorPickerTarget: Equatable {
     case gradientMap(highlights: Bool)
     var title: String {
         switch self {
-        case .palette(let background): return background ? "Color Picker (Background Color)" : "Color Picker (Foreground Color)"
-        case .gradientMap(let highlights): return highlights ? "Color Picker (Gradient Map Highlights)" : "Color Picker (Gradient Map Shadows)"
+        case .palette(let background): return background ? String(localized: "Color Picker (Background Color)") : String(localized: "Color Picker (Foreground Color)")
+        case .gradientMap(let highlights): return highlights ? String(localized: "Color Picker (Gradient Map Highlights)") : String(localized: "Color Picker (Gradient Map Shadows)")
         }
     }
 }
