@@ -27,7 +27,7 @@ enum ImageFileDrop {
         else if let projects { await projects.receive(urls, at: point) }
         else { await session.importImages(urls, at: point) }
         if unreadable, !providers.isEmpty {
-            let message = "Some dropped items couldn’t be read. Drag JPEG, PNG, HEIC, or TIFF files from Finder."
+            let message = String(localized: "Some dropped items couldn’t be read. Drag JPEG, PNG, HEIC, or TIFF files from Finder.")
             session.importError = [session.importError, message].compactMap { $0 }.joined(separator: "\n\n")
         }
     }
@@ -43,7 +43,7 @@ enum ImageFileDrop {
                 let name = url.deletingPathExtension().lastPathComponent
                 let suffix = url.pathExtension.isEmpty ? (UTType(type)?.preferredFilenameExtension ?? "png") : url.pathExtension
                 let copy = FileManager.default.temporaryDirectory
-                    .appendingPathComponent("\(name.isEmpty ? "Dropped" : name)-\(UUID().uuidString)")
+                    .appendingPathComponent("\(name.isEmpty ? String(localized: "Dropped") : name)-\(UUID().uuidString)")
                     .appendingPathExtension(suffix)
                 do {
                     try FileManager.default.copyItem(at: url, to: copy)
