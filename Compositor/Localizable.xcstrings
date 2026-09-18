@@ -1,0 +1,906 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "" : {
+
+    },
+    "· encoded preview, fitted to window" : {
+
+    },
+    "#" : {
+
+    },
+    "%" : {
+
+    },
+    "%@ color" : {
+
+    },
+    "%@ the selection by this many pixels" : {
+
+    },
+    "%@ uncompressed RGBA canvas" : {
+
+    },
+    "%@…" : {
+
+    },
+    "%lld" : {
+
+    },
+    "%lld × %lld px" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld × %2$lld px"
+          }
+        }
+      }
+    },
+    "%lld × %lld px · sRGB" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld × %2$lld px · sRGB"
+          }
+        }
+      }
+    },
+    "%lld degrees" : {
+
+    },
+    "%lld%%" : {
+
+    },
+    "100%" : {
+
+    },
+    "A blank space for your next composition." : {
+
+    },
+    "Actual Pixels" : {
+
+    },
+    "Actual pixels (⌘1)" : {
+
+    },
+    "Add layer mask" : {
+
+    },
+    "Add layer mask (the selection becomes black)" : {
+
+    },
+    "Aligned" : {
+
+    },
+    "All" : {
+
+    },
+    "All Layers" : {
+
+    },
+    "Anchor" : {
+
+    },
+    "Anti-alias" : {
+
+    },
+    "Apply" : {
+
+    },
+    "Apply Crop" : {
+
+    },
+    "Apply outside this range instead" : {
+
+    },
+    "Applying…" : {
+
+    },
+    "Auto" : {
+
+    },
+    "Auto Select" : {
+
+    },
+    "Background for transparency" : {
+
+    },
+    "Basic is quick; Advanced refines the mask against the layer's own detail, for hair and fur" : {
+
+    },
+    "Black · Hide" : {
+
+    },
+    "Blend" : {
+
+    },
+    "Blue" : {
+
+    },
+    "Brush" : {
+
+    },
+    "Cancel" : {
+
+    },
+    "Canvas extension" : {
+
+    },
+    "Canvas Size" : {
+
+    },
+    "Canvas Size…" : {
+
+    },
+    "Channel" : {
+
+    },
+    "Check for Updates…" : {
+
+    },
+    "Choose the %@ color" : {
+
+    },
+    "Clear Selection Pixels" : {
+
+    },
+    "Clear the haze that leaves background showing through thin areas" : {
+
+    },
+    "Click the canvas to sample" : {
+
+    },
+    "Click the original layer to set %@. Click the eyedropper again to stop." : {
+
+    },
+    "Click to add a point. Drag to adjust." : {
+
+    },
+    "Clone Stamp" : {
+
+    },
+    "Close %@" : {
+
+    },
+    "Close Project" : {
+
+    },
+    "Color" : {
+
+    },
+    "Colorize" : {
+
+    },
+    "Colors" : {
+
+    },
+    "Compositor" : {
+
+    },
+    "Content-Aware Fill…" : {
+
+    },
+    "Contiguous" : {
+
+    },
+    "Contract by %lld px" : {
+
+    },
+    "Copy" : {
+
+    },
+    "Copy from the active layer only, or from every visible layer as shown" : {
+
+    },
+    "Copy Merged" : {
+
+    },
+    "Couldn’t crop" : {
+
+    },
+    "Couldn’t paint" : {
+
+    },
+    "Create a canvas or import an image." : {
+
+    },
+    "Create canvas" : {
+
+    },
+    "Create Clipping Mask" : {
+
+    },
+    "Crop" : {
+
+    },
+    "Current: %lld × %lld pixels" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Current: %1$lld × %2$lld pixels"
+          }
+        }
+      }
+    },
+    "Curves…" : {
+
+    },
+    "Cut" : {
+
+    },
+    "Default colors" : {
+
+    },
+    "Default colors (D)" : {
+
+    },
+    "Delete Layer" : {
+
+    },
+    "Delete layer mask" : {
+
+    },
+    "Delete Layer Mask" : {
+
+    },
+    "Delete Layers" : {
+
+    },
+    "Delete selected layer" : {
+
+    },
+    "Delete selected layers" : {
+
+    },
+    "Deselect" : {
+
+    },
+    "Distribution" : {
+
+    },
+    "Drag to resize the panel" : {
+
+    },
+    "Drop into new canvas" : {
+
+    },
+    "Drop to open in a new canvas" : {
+
+    },
+    "Duplicate Layer" : {
+
+    },
+    "Edit Adjustment…" : {
+
+    },
+    "Empty selection" : {
+
+    },
+    "Enter whole numbers from 1 to 30,000 pixels." : {
+
+    },
+    "Eraser" : {
+
+    },
+    "Expand by %lld px" : {
+
+    },
+    "Export JPEG" : {
+
+    },
+    "Export JPEG…" : {
+
+    },
+    "Export PNG…" : {
+
+    },
+    "Export…" : {
+
+    },
+    "Extension color" : {
+
+    },
+    "Eyedropper" : {
+
+    },
+    "Fill" : {
+
+    },
+    "Fill the selection using surrounding pixels from this layer." : {
+
+    },
+    "Fill with Background Color" : {
+
+    },
+    "Fill with Foreground Color" : {
+
+    },
+    "Filter" : {
+
+    },
+    "Final dimensions must be 1–30,000 pixels per side." : {
+
+    },
+    "Fit" : {
+
+    },
+    "Fit Canvas" : {
+
+    },
+    "Fit canvas in window (⌘0)" : {
+
+    },
+    "Flip Canvas Horizontal" : {
+
+    },
+    "Flip Canvas Vertical" : {
+
+    },
+    "Flip H" : {
+
+    },
+    "Flip Layer Horizontal" : {
+
+    },
+    "Flip Layer Vertical" : {
+
+    },
+    "Flip V" : {
+
+    },
+    "Foreground color" : {
+
+    },
+    "Gaussian" : {
+
+    },
+    "Gradient" : {
+
+    },
+    "Green" : {
+
+    },
+    "Group Selected Layers" : {
+
+    },
+    "Group selected layers (⌘G)" : {
+
+    },
+    "Hardness" : {
+
+    },
+    "Height" : {
+
+    },
+    "Hex" : {
+
+    },
+    "Hex color" : {
+
+    },
+    "Hide Compositor" : {
+
+    },
+    "Hide Layer" : {
+
+    },
+    "Hide Others" : {
+
+    },
+    "Hide the background behind a layer mask, keeping the foreground subjects. The pixels stay, so the background can be painted back at any time." : {
+
+    },
+    "Hold Shift to add or Option to subtract for one outline" : {
+
+    },
+    "How far each color channel (0–255) can differ from the clicked color and still be selected" : {
+
+    },
+    "Hue" : {
+
+    },
+    "Hue/Saturation…" : {
+
+    },
+    "Image" : {
+
+    },
+    "Image Size" : {
+
+    },
+    "Image Size…" : {
+
+    },
+    "Import an image or add a blank layer." : {
+
+    },
+    "Import couldn’t finish" : {
+
+    },
+    "Import image" : {
+
+    },
+    "Import Images…" : {
+
+    },
+    "Importing images…" : {
+
+    },
+    "Input %lld · Output %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Input %1$lld · Output %2$lld"
+          }
+        }
+      }
+    },
+    "Inverse" : {
+
+    },
+    "Invert" : {
+
+    },
+    "Invert Mask" : {
+
+    },
+    "Keep the source moving with the brush between strokes; off starts every stroke at the source point" : {
+
+    },
+    "Keeps this point fixed. Artwork is not scaled; cropped content remains outside the canvas." : {
+
+    },
+    "Lasso" : {
+
+    },
+    "Layer" : {
+
+    },
+    "Layer via Copy" : {
+
+    },
+    "Layer's Pixels" : {
+
+    },
+    "Layers" : {
+
+    },
+    "Levels…" : {
+
+    },
+    "Limited to the selection" : {
+
+    },
+    "Linear histogram with automatic vertical scaling. Tall spikes may extend beyond the graph; all tones from 0 to 255 remain included." : {
+
+    },
+    "Linear runs along the line; Radial spreads out from the start point" : {
+
+    },
+    "Liquify pushes pixels · Blur softens · Smudge drags color along" : {
+
+    },
+    "Loading histogram…" : {
+
+    },
+    "Lock aspect ratio" : {
+
+    },
+    "Lock original aspect ratio" : {
+
+    },
+    "Magic Wand" : {
+
+    },
+    "Marquee" : {
+
+    },
+    "Mask" : {
+
+    },
+    "Mask background" : {
+
+    },
+    "Mask foreground" : {
+
+    },
+    "Mask's Black Areas" : {
+
+    },
+    "Match the clicked pixel, or the average of the pixels around it" : {
+
+    },
+    "Mode" : {
+
+    },
+    "Monochromatic" : {
+
+    },
+    "Move Layer Down" : {
+
+    },
+    "Move Layer Up" : {
+
+    },
+    "Move Out of Folder" : {
+
+    },
+    "New" : {
+
+    },
+    "New adjustment layer" : {
+
+    },
+    "New Adjustment Layer" : {
+
+    },
+    "New blank layer" : {
+
+    },
+    "New Blank Layer" : {
+
+    },
+    "New blank layer (⇧⌘N)" : {
+
+    },
+    "New canvas" : {
+
+    },
+    "New canvas (⌘N)" : {
+
+    },
+    "New canvas (⌘N) · Drop images here for new tabs" : {
+
+    },
+    "New Canvas…" : {
+
+    },
+    "New color" : {
+
+    },
+    "New folder" : {
+
+    },
+    "New: %lld × %lld pixels · %@ uncompressed" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "New: %1$lld × %2$lld pixels · %3$@ uncompressed"
+          }
+        }
+      }
+    },
+    "No layers yet" : {
+
+    },
+    "OK" : {
+
+    },
+    "Only print dimensions and resolution change. Pixels stay unchanged." : {
+
+    },
+    "Opacity" : {
+
+    },
+    "Opacity percent" : {
+
+    },
+    "Open in a new project tab" : {
+
+    },
+    "Open project" : {
+
+    },
+    "Open Project…" : {
+
+    },
+    "Option-click to set the source" : {
+
+    },
+    "Original %@ histogram" : {
+
+    },
+    "Original pixels · alpha-weighted histogram" : {
+
+    },
+    "Original pixels · selection and alpha-weighted histogram" : {
+
+    },
+    "Paint" : {
+
+    },
+    "Paint with the foreground color (B), or erase pixels away (E)" : {
+
+    },
+    "Pan" : {
+
+    },
+    "Paste" : {
+
+    },
+    "Pixel Grid (800% and above)" : {
+
+    },
+    "pixels/inch" : {
+
+    },
+    "Positive straightens lines that bow outward (barrel); negative, lines that bow inward (pincushion)." : {
+
+    },
+    "Press 1–9 for 10–90%, 0 for 100%" : {
+
+    },
+    "Press L to switch between Freehand and Polygonal" : {
+
+    },
+    "Press M to switch between Rectangle and Ellipse" : {
+
+    },
+    "Preview" : {
+
+    },
+    "Project tabs" : {
+
+    },
+    "Pull the mask onto the image's own edges, which recovers hair and fur" : {
+
+    },
+    "px" : {
+
+    },
+    "Quality" : {
+
+    },
+    "Radius" : {
+
+    },
+    "Range" : {
+
+    },
+    "Ratio" : {
+
+    },
+    "Read colors from the active layer only, or from every visible layer as shown" : {
+
+    },
+    "Ready when you are" : {
+
+    },
+    "Red" : {
+
+    },
+    "Redo" : {
+
+    },
+    "Redo %@" : {
+
+    },
+    "Relative to current dimensions" : {
+
+    },
+    "Release Clipping Mask" : {
+
+    },
+    "Remove point" : {
+
+    },
+    "Rename Layer…" : {
+
+    },
+    "Resample" : {
+
+    },
+    "Reset" : {
+
+    },
+    "Reset curve" : {
+
+    },
+    "Resize" : {
+
+    },
+    "Resizes layer pixels and applies existing transforms. Undo restores the originals." : {
+
+    },
+    "Resolution" : {
+
+    },
+    "Result: %lld × %lld pixels" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Result: %1$lld × %2$lld pixels"
+          }
+        }
+      }
+    },
+    "Reverse" : {
+
+    },
+    "Round the rectangle's corners by this many pixels; 0 keeps them square" : {
+
+    },
+    "Sample" : {
+
+    },
+    "Sample Ring" : {
+
+    },
+    "Sample Size" : {
+
+    },
+    "Sampling" : {
+
+    },
+    "Saturation and brightness" : {
+
+    },
+    "Save" : {
+
+    },
+    "Save As…" : {
+
+    },
+    "Scale width and height together, about the center" : {
+
+    },
+    "Select" : {
+
+    },
+    "Select a tool" : {
+
+    },
+    "Select layers by clicking the canvas. When off, hold Command to select a layer." : {
+
+    },
+    "Select only similar pixels connected to the one you click; off selects them everywhere" : {
+
+    },
+    "Selected" : {
+
+    },
+    "Shape" : {
+
+    },
+    "Shapes fill with the foreground color; click to change it" : {
+
+    },
+    "Shift-U switches between Rectangle and Ellipse" : {
+
+    },
+    "Show All" : {
+
+    },
+    "Show Controls" : {
+
+    },
+    "Show Layer" : {
+
+    },
+    "Show the transform box and handles (⌘H). When hidden, drag anywhere to move the layer." : {
+
+    },
+    "Show Transform Controls" : {
+
+    },
+    "Shrink the mask to drop the rim of background color around the subject, or grow it" : {
+
+    },
+    "Size" : {
+
+    },
+    "Smear" : {
+
+    },
+    "Smooth selection edges; turn off for hard pixel edges" : {
+
+    },
+    "Spot Healing" : {
+
+    },
+    "sRGB · Transparent" : {
+
+    },
+    "Strength" : {
+
+    },
+    "Swap colors" : {
+
+    },
+    "Swap foreground and background (X)" : {
+
+    },
+    "Targeted adjustment" : {
+
+    },
+    "Targeted adjustment: drag on the image to change that color's saturation, or its hue with Command held" : {
+
+    },
+    "This Layer" : {
+
+    },
+    "Tolerance" : {
+
+    },
+    "Transform" : {
+
+    },
+    "Transform Layer" : {
+
+    },
+    "Transform Mask" : {
+
+    },
+    "Transform Selection" : {
+
+    },
+    "Transparent canvas · sRGB" : {
+
+    },
+    "Type" : {
+
+    },
+    "Underlying pixels · alpha-weighted histogram" : {
+
+    },
+    "Undo" : {
+
+    },
+    "Undo %@" : {
+
+    },
+    "Uniform" : {
+
+    },
+    "Units" : {
+
+    },
+    "Unsaved changes" : {
+
+    },
+    "Updating preview…" : {
+
+    },
+    "Use 1–30,000 pixels per side, up to 100 megapixels, and 1–9,600 pixels/inch." : {
+
+    },
+    "White · Reveal" : {
+
+    },
+    "Width" : {
+
+    },
+    "Working…" : {
+
+    },
+    "Zoom" : {
+
+    },
+    "Zoom In" : {
+
+    },
+    "Zoom in (⌘+)" : {
+
+    },
+    "Zoom Out" : {
+
+    },
+    "Zoom out (⌘−)" : {
+
+    },
+    "Zoom percentage" : {
+
+    },
+    "Zoom percentage (0.1–3200%). Press Return to apply." : {
+
+    }
+  },
+  "version" : "1.0"
+}
