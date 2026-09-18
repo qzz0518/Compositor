@@ -685,7 +685,7 @@ final class EditorSession {
         beginEdit(String(localized: "New Canvas"))
         defer { endEdit() }
         var document = CanvasDocument(width: width, height: height)
-        let layer = emptyLayer ? ImageLayer(name: String(localized: "Layer \(1)"),blankSize: document.size) : nil
+        let layer = emptyLayer ? ImageLayer(name: String(localized: "Layer \(1)"), blankSize: document.size) : nil
         if let layer { document.layers = [layer] }
         self.document = document
         activeLayerID = layer?.id
