@@ -2,6 +2,8 @@
 
 > **macOS 15 compatible fork** of [robbietilton/Compositor](https://github.com/robbietilton/Compositor). Upstream requires macOS 26.5; this fork runs on **macOS 15 (Sequoia) and later**.
 >
+> **Download:** [Compositor.dmg](https://github.com/qzz0518/Compositor/releases/latest/download/Compositor.dmg), signed and notarized. In-app updates come from this fork's releases, not upstream's. **下载：** 同上链接，已签名并公证，App 内的自动更新来自本 fork。
+>
 > - **Deployment target** lowered from macOS 26.5 to 15.0. Upstream uses only three macOS 26 APIs, all cosmetic: `NSPopUpButton.borderShape`, `ToolbarSpacer` and `sharedBackgroundVisibility`. They're now behind `#available(macOS 26.0, *)`. On macOS 15 the blend-mode pop-up keeps the standard bezel and the toolbar uses the system spacing; all editing features are unchanged.
 > - **App icon** redrawn to the standard macOS template: an 824 × 824 rounded rectangle with a drop shadow, centered on a 1024 canvas. Upstream ships a full-bleed square, which macOS 26 masks itself but earlier versions show as an oversized square in the Dock and Finder.
 > - **Builds with Xcode 26.3**: two expressions that timed out the type checker are split up.

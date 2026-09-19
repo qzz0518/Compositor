@@ -8,7 +8,7 @@ set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 APP=Compositor
-REPO=robbietilton/Compositor
+REPO=qzz0518/Compositor
 WORK="$HOME/Library/Caches/CompositorRelease"
 SIGN_UPDATE="$WORK/DerivedData/SourcePackages/artifacts/sparkle/Sparkle/bin/sign_update"
 
@@ -16,7 +16,8 @@ settings=$(xcodebuild -project "$PROJECT_DIR/$APP.xcodeproj" -scheme "$APP" -con
 VERSION=$(print -r -- "$settings" | awk -F' = ' '/ MARKETING_VERSION = /{print $2; exit}')
 BUILD=$(print -r -- "$settings" | awk -F' = ' '/ CURRENT_PROJECT_VERSION = /{print $2; exit}')
 MINIMUM=$(print -r -- "$settings" | awk -F' = ' '/ MACOSX_DEPLOYMENT_TARGET = /{print $2; exit}')
-TAG="v$VERSION"
+# Upstream's v<version> tags come along with the fork, so fork releases add the build: v1.0.4-zh.6.
+TAG="v$VERSION-zh.$BUILD"
 SOURCE="$PROJECT_DIR/dist/$APP-$VERSION.dmg"
 [[ -f "$SOURCE" ]] || { echo "No $SOURCE — run scripts/release.sh first."; exit 1; }
 [[ -x "$SIGN_UPDATE" ]] || { echo "Sparkle's sign_update isn't built — run scripts/release.sh first."; exit 1; }
@@ -35,7 +36,7 @@ echo "==> Signing the update for Sparkle"
 signature=$("$SIGN_UPDATE" "$DMG")
 
 echo "==> Creating GitHub Release $TAG"
-gh release create "$TAG" "$DMG" --repo "$REPO" --title "$APP $VERSION" --notes "${RELEASE_NOTES:-$APP $VERSION}"
+gh release create "$TAG" "$DMG" --repo "$REPO" --target main --title "$APP ${TAG#v}" --notes "${RELEASE_NOTES:-$APP $VERSION}"
 
 echo "==> Publishing the update feed"
 cat > "$PROJECT_DIR/appcast.xml" <<XML

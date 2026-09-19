@@ -4,7 +4,8 @@
 # Needs, all kept out of this repository:
 #   - a "Developer ID Application" certificate in the login keychain
 #   - notarization credentials saved once with:
-#       xcrun notarytool store-credentials "compositor-notary" --apple-id "…" --team-id 3E4X3B9Z9T
+#       xcrun notarytool store-credentials "compositor-notary" --apple-id "…" --team-id H2P566W3PA
+#     (or point NOTARY_PROFILE at an existing profile)
 #   - create-dmg (brew install create-dmg)
 # The DMG window background is scripts/dmg/dmg-bg.jpg (600 × 380, the window's exact size) plus
 # dmg-bg-retina.jpg (1200 × 760) for Retina displays.
@@ -12,9 +13,9 @@ set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 APP=Compositor
-TEAM=3E4X3B9Z9T
+TEAM=H2P566W3PA
 IDENTITY="Developer ID Application"
-NOTARY_PROFILE=compositor-notary
+NOTARY_PROFILE="${NOTARY_PROFILE:-compositor-notary}"
 # Built outside Dropbox: the extended attributes it adds to files make code signing fail.
 WORK="$HOME/Library/Caches/CompositorRelease"
 DIST="$PROJECT_DIR/dist"
