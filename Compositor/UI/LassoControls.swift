@@ -21,7 +21,7 @@ struct LassoControls: View {
                     session.cancelLasso()
                     session.wandMode = mode
                 })) {
-                    ForEach(WandMode.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                    ForEach(WandMode.allCases, id: \.self) { Text($0.localizedName).tag($0) }
                 }
                 .pickerStyle(.segmented).labelsHidden().fixedSize()
                 .help("Press Tab to switch between Wand and Object")

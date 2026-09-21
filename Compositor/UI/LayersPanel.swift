@@ -40,7 +40,7 @@ struct LayersPanel: View {
                 LayerMaskMenu(session: session)
                 Menu {
                     ForEach(LayerEffectKind.allCases, id: \.self) { kind in
-                        Button(kind.rawValue + "…") { session.addEffect(kind) }
+                        Button("\(kind.localizedName)…") { session.addEffect(kind) }
                     }
                 } label: { Image(systemName: "sparkles").footerHitArea() }
                     .menuStyle(.borderlessButton).fixedSize()

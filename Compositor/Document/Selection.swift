@@ -327,7 +327,7 @@ extension EditorSession {
         // Two soft edges together spread a little less than their sum, as blurs do.
         let softened = (current.feather * current.feather + CGFloat(amount) * CGFloat(amount)).squareRoot()
         setSelection(DocumentSelection(path: current.path, antialiased: current.antialiased,
-                                       feather: min(250, softened)), name: "Feather Selection")
+                                       feather: min(250, softened)), name: String(localized: "Feather Selection"))
     }
 
     private func resizeSelection(by delta: CGFloat, name: String) {

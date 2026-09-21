@@ -298,7 +298,9 @@ struct CompositorApp: App {
                             .disabled(!session.canTransform)
                     }
                     Divider()
-                    Button(session.selectedEffect != nil ? "Delete " + session.selectedEffect!.kind.rawValue : session.isMaskSelected && session.activeLayer?.mask != nil ? "Delete Layer Mask" : session.selectedLayerIDs.count > 1 ? "Delete Layers" : "Delete Layer") {
+                    Button(session.selectedEffect.map { String(localized: "Delete \($0.kind.localizedName)") }
+                           ?? (session.isMaskSelected && session.activeLayer?.mask != nil ? String(localized: "Delete Layer Mask")
+                           : session.selectedLayerIDs.count > 1 ? String(localized: "Delete Layers") : String(localized: "Delete Layer"))) {
                         session.deleteLayerOrMask()
                     }
                         .disabled(!session.canEditLayers || session.activeLayer == nil)

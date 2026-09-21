@@ -2,6 +2,14 @@ import AppKit
 
 nonisolated enum TextAlignment: String, Codable, CaseIterable, Sendable {
     case left = "Left", center = "Center", right = "Right"
+    /// The alignment button's label, one phrase per case so it translates as a whole.
+    var alignLabel: String {
+        switch self {
+        case .left: String(localized: "Align left")
+        case .center: String(localized: "Align center")
+        case .right: String(localized: "Align right")
+        }
+    }
 }
 
 nonisolated struct LayerTextStyle: Codable, Equatable, Sendable {
@@ -131,7 +139,7 @@ extension EditorSession {
                 document?.layers[index].transform = transform
                 endEdit()
             } else {
-                addPixelLayer(image, at: draft.origin, name: Self.layerName(for: draft.style.content), editName: "New Text Layer",
+                addPixelLayer(image, at: draft.origin, name: Self.layerName(for: draft.style.content), editName: String(localized: "New Text Layer"),
                               dropsSelection: false, text: text)
             }
             succeeded = true
@@ -157,7 +165,7 @@ extension EditorSession {
         guard canEditLayers, textDraft == nil, rect.width.isFinite, rect.height.isFinite else { return }
         var style = textDefaults
         style.boxSize = CGSize(width: max(16, rect.width.rounded()), height: max(16, rect.height.rounded()))
-        guard style.boxIsValid else { brushError = "That text box exceeds the 30,000-pixel or 100-megapixel limit."; return }
+        guard style.boxIsValid else { brushError = String(localized: "That text box exceeds the 30,000-pixel or 100-megapixel limit."); return }
         beginText(at: rect.origin, newLayer: true)
         textDraft?.style.boxSize = style.boxSize
     }
@@ -173,7 +181,7 @@ extension EditorSession {
         style.red = color.red; style.green = color.green; style.blue = color.blue
         guard style.isValid, let image = try? Self.textImage(style), let thumbnail = try? PixelInvert.thumbnail(of: image) else { return false }
         finishOpacityEdit()
-        beginEdit("Fill Text")
+        beginEdit(String(localized: "Fill Text"))
         document?.layers[index].asset = ImportedImage(image: image, thumbnail: thumbnail, name: asset.name)
         document?.layers[index].text = LayerText(style: style, image: image)
         endEdit()

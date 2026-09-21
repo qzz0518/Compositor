@@ -137,7 +137,7 @@ extension EditorSession {
             var toDocument = BrushRaster.pixelToDocument(LayerTransform(origin: .zero, size: document.size),
                                                          width: mask.width, height: mask.height)
             guard let outline = traced.copy(using: &toDocument) else { return }
-            applySelection(outline, mode: mode, name: "Select Subject")
+            applySelection(outline, mode: mode, name: String(localized: "Select Subject"))
         }
     }
 }
