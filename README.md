@@ -4,12 +4,12 @@
 >
 > **Download:** [Compositor.dmg](https://github.com/qzz0518/Compositor/releases/latest/download/Compositor.dmg), signed and notarized. In-app updates come from this fork's releases, not upstream's. **下载：** 同上链接，已签名并公证，App 内的自动更新来自本 fork。
 >
-> - **Deployment target** lowered from macOS 26.5 to 15.0. Upstream uses only three macOS 26 APIs, all cosmetic: `NSPopUpButton.borderShape`, `ToolbarSpacer` and `sharedBackgroundVisibility`. They're now behind `#available(macOS 26.0, *)`. On macOS 15 the blend-mode pop-up keeps the standard bezel and the toolbar uses the system spacing; all editing features are unchanged.
+> - **Deployment target** lowered from macOS 26.5 to 15.0. Upstream uses only three macOS 26 APIs, all cosmetic: `NSPopUpButton.borderShape`, `ToolbarSpacer` and `sharedBackgroundVisibility`. They're now behind `#available(macOS 26.0, *)`. On macOS 15 the blend-mode and font pop-ups keep the standard bezel and the toolbar uses the system spacing; all editing features are unchanged.
 > - **App icon** redrawn to the standard macOS template: an 824 × 824 rounded rectangle with a drop shadow, centered on a 1024 canvas. Upstream ships a full-bleed square, which macOS 26 masks itself but earlier versions show as an oversized square in the Dock and Finder.
 > - **Builds with Xcode 26.3**: two expressions that timed out the type checker are split up.
 > - **Simplified Chinese localization**: menus, panels, tools, status-bar hints, undo names, alerts and default layer names, in a string catalog (`Compositor/Localizable.xcstrings`). The app follows the system language. Terminology follows Photoshop's Simplified Chinese UI.
 >
-> **Fork 说明**：上游最低要求 macOS 26.5，本 fork 支持 **macOS 15 及以上**。上游只用到 3 个 macOS 26 专属的外观 API，现已加上版本判断：在 15 上混合模式下拉框保持标准样式，工具栏用系统默认间距，编辑功能不变。图标改为标准 macOS 模板（四周留边、带阴影），修复在旧系统上显示成超大方块的问题。另外新增**简体中文界面**（菜单、面板、工具、状态栏提示、撤销项、提示框、默认图层名），跟随系统语言切换，术语参照 Photoshop 中文版。
+> **Fork 说明**：上游最低要求 macOS 26.5，本 fork 支持 **macOS 15 及以上**。上游只用到 3 个 macOS 26 专属的外观 API，现已加上版本判断：在 15 上混合模式和字体下拉框保持标准样式，工具栏用系统默认间距，编辑功能不变。图标改为标准 macOS 模板（四周留边、带阴影），修复在旧系统上显示成超大方块的问题。另外新增**简体中文界面**（菜单、面板、工具、状态栏提示、撤销项、提示框、默认图层名），跟随系统语言切换，术语参照 Photoshop 中文版。
 
 Adobe Photoshop costs too much and tools like GIMP don’t feel familiar enough for me to stay in flow. That’s why I built Compositor.
 
