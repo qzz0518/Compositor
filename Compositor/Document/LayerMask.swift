@@ -220,6 +220,7 @@ extension EditorSession {
     /// Layers and folders alike take a mask.
     var canEditMask: Bool { canEditLayers && selectedLayerIDs.count == 1 && activeLayer != nil }
     func selectLayerTarget(_ id: UUID, mask: Bool) {
+        effectSelection = nil
         guard !isProjectBusy, !isImporting, brushStroke == nil else { return }
         resolveGradient()
         selectLayer(id)
@@ -241,13 +242,12 @@ extension EditorSession {
             let context = try BrushRaster.context(width: width, height: height, mask: true)
             context.setFillColor(gray: revealing ? 1 : 0, alpha: 1)
             context.fill(CGRect(x: 0, y: 0, width: width, height: height))
-            var toPixels = BrushRaster.pixelToDocument(layer.transform, width: width, height: height).inverted()
-            if let outline = selection.path.copy(using: &toPixels) {
-                context.setShouldAntialias(selection.antialiased)
-                context.setFillColor(gray: revealing ? 0 : 1, alpha: 1)
-                context.addPath(outline)
-                context.fillPath(using: .winding)
-            }
+            guard let canvasSize = document?.size else { return }
+            let clip = try selection.clip(canvas: canvasSize)
+            context.concatenate(BrushRaster.pixelToDocument(layer.transform, width: width, height: height).inverted())
+            clip.apply(to: context)
+            context.setFillColor(gray: revealing ? 0 : 1, alpha: 1)
+            context.fill(clip.rect)
             guard let image = context.makeImage() else { throw ExportError.render }
             let mask = LayerMask(asset: try LayerMask.asset(from: image))
             finishOpacityEdit()

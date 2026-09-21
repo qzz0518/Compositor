@@ -51,10 +51,10 @@ struct HueSaturationSheet: View {
             }
             Divider()
             HStack {
-                Button("Cancel") { session.cancelHueSaturation() }.keyboardShortcut(.cancelAction)
+                Button("Cancel") { session.cancelHueSaturation() }.configuredNativeShortcut(.escape)
                 Spacer()
                 Button("OK") { Task { await session.commitHueSaturation() } }
-                    .keyboardShortcut(.defaultAction).buttonStyle(.borderedProminent)
+                    .configuredNativeShortcut(.return).buttonStyle(.borderedProminent)
             }
         }
         .padding(24).frame(width: 460).fixedSize()

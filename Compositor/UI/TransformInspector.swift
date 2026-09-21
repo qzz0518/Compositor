@@ -42,9 +42,9 @@ struct TransformInspector: View {
             }.disabled((!session.canTransform && session.transformEdit == nil) || session.transformEdit?.corners != nil)
                 .padding(.horizontal, 18)
           }.scrollIndicators(.hidden)
-          Button("Cancel") { session.cancelTransform() }.keyboardShortcut(.cancelAction)
+          Button("Cancel") { session.cancelTransform() }.configuredNativeShortcut(.escape)
               .disabled(session.transformEdit == nil)
-          Button("Apply") { session.commitTransform() }.keyboardShortcut(.defaultAction)
+          Button("Apply") { session.commitTransform() }.configuredNativeShortcut(.return)
               .disabled(session.transformEdit == nil).accessibilityIdentifier("applyTransform")
         }.padding(.trailing, 18).toolHeaderBar().releasesFocusOnCommit(session)
     }

@@ -75,7 +75,7 @@ struct FilterSheet: View {
             }
             Divider()
             HStack {
-                Button("Cancel") { session.cancelFilter() }.keyboardShortcut(.cancelAction)
+                Button("Cancel") { session.cancelFilter() }.configuredNativeShortcut(.escape)
                 Spacer()
                 // While the preview is being worked out (Remove Background's mask, Content-Aware Fill) OK waits, so
                 // the panel says what it is waiting for rather than showing a disabled button and nothing else.
@@ -85,7 +85,7 @@ struct FilterSheet: View {
                         .font(.callout).foregroundStyle(.secondary)
                 }
                 Button("OK") { Task { await session.commitFilter() } }
-                    .keyboardShortcut(.defaultAction).buttonStyle(.borderedProminent)
+                    .configuredNativeShortcut(.return).buttonStyle(.borderedProminent)
                     .disabled(edit?.kind.isAutomatic == true && (edit?.preparing == true || edit?.previewError != nil))
             }
         }

@@ -84,13 +84,13 @@ extension EditorSession {
                 moved = selection.flatMap { selection in
                     DistortWarp.mapPath(selection.path, pixelToDocument: placement, pixelSize: floating.pixelSize,
                                         transform: edit.draft, corners: corners)
-                        .map { DocumentSelection(path: $0, antialiased: selection.antialiased) }
+                        .map { DocumentSelection(path: $0, antialiased: selection.antialiased, feather: selection.feather) }
                 }
             } else {
                 moved = floatingSelectionTransform(edit).flatMap { transform -> DocumentSelection? in
                     var matrix = transform
                     guard let selection, let path = selection.path.copy(using: &matrix) else { return nil }
-                    return DocumentSelection(path: path, antialiased: selection.antialiased)
+                    return DocumentSelection(path: path, antialiased: selection.antialiased, feather: selection.feather)
                 }
             }
             document?.layers.removeAll { $0.id == edit.layerID }

@@ -14,7 +14,8 @@ actor CanvasResizer {
         }
         guard options.width != old.width || options.height != old.height || offset != .zero else { return snapshot }
         var manifest = ProjectManifest(resolution: old.resolution, documentID: old.documentID,
-            width: options.width, height: options.height, activeLayerID: old.activeLayerID, layers: [])
+            width: options.width, height: options.height, activeLayerID: old.activeLayerID, layers: [],
+            guides: old.guides?.map { $0.offset(x: offset.x, y: offset.y) })
         for layer in old.layers {
             var transform = layer.transform
             transform.origin.x += offset.x
@@ -27,7 +28,7 @@ actor CanvasResizer {
                     moved.origin.x += offset.x
                     moved.origin.y += offset.y
                     return moved
-                }, maskLinked: layer.maskLinked, shape: layer.shape))
+                }, maskLinked: layer.maskLinked, shape: layer.shape, text: layer.text))
         }
         var images = snapshot.images
         // A colored extension is separate bottom-layer content. The old canvas

@@ -26,9 +26,9 @@ struct ColorPickerSheet: View {
                     preview
                     VStack(spacing: 8) {
                         Button { finish(true) } label: { Text("OK").frame(maxWidth: .infinity) }
-                            .keyboardShortcut(.defaultAction)
+                            .configuredNativeShortcut(.return)
                         Button { finish(false) } label: { Text("Cancel").frame(maxWidth: .infinity) }
-                            .keyboardShortcut(.cancelAction)
+                            .configuredNativeShortcut(.escape)
                     }
                     .controlSize(.large).frame(width: 90)
                 }

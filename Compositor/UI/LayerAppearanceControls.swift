@@ -11,7 +11,7 @@ struct LayerAppearanceControls: View {
             HStack {
                 Text("Blend").font(.caption)
                 BlendModePicker(session: session)
-            }
+            }.disabled(!session.canEditAppearance)
             HStack(spacing: 6) {
                 Text("Opacity").font(.caption)
                 Slider(value: Binding(get: { session.activeLayer?.opacity ?? 1 },
@@ -29,7 +29,7 @@ struct LayerAppearanceControls: View {
                     Text("%").font(.caption)
                 }
             }
-        }.padding(12).disabled(!session.canEditAppearance)
+        }.padding(12).disabled(!session.canEditOpacity)
             .onAppear { sync() }
             .onChange(of: session.activeLayer?.opacity) { _, _ in if !focused { sync() } }
             .onDisappear { session.finishOpacityEdit() }

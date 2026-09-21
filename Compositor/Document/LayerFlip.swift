@@ -71,9 +71,10 @@ extension EditorSession {
                 ? CGAffineTransform(a: -1, b: 0, c: 0, d: 1, tx: document.size.width, ty: 0)
                 : CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: document.size.height)
             if let path = selection.path.copy(using: &mirror) {
-                self.document?.selection = DocumentSelection(path: path, antialiased: selection.antialiased)
+                self.document?.selection = DocumentSelection(path: path, antialiased: selection.antialiased, feather: selection.feather)
             }
         }
+        self.document?.guides = document.guides.map { $0.mirrored(horizontally: horizontally, across: axis) }
         endEdit()
     }
 }

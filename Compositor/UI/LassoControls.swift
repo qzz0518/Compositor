@@ -5,7 +5,7 @@ struct LassoControls: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Text(session.tool == .marquee ? "Marquee" : session.tool == .wand ? "Magic Wand" : "Lasso").font(ToolHeaderStyle.titleFont)
+            Text(session.tool == .marquee ? "Marquee" : session.tool == .wand ? "Magic" : "Lasso").font(ToolHeaderStyle.titleFont)
             if session.tool == .marquee {
                 Picker("Shape", selection: Binding(get: { session.marqueeKind }, set: { kind in
                     session.cancelLasso()
@@ -15,6 +15,16 @@ struct LassoControls: View {
                 }
                 .pickerStyle(.segmented).labelsHidden().fixedSize()
                 .help("Press M to switch between Rectangle and Ellipse")
+            }
+            if session.tool == .wand {
+                Picker("Mode", selection: Binding(get: { session.wandMode }, set: { mode in
+                    session.cancelLasso()
+                    session.wandMode = mode
+                })) {
+                    ForEach(WandMode.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                }
+                .pickerStyle(.segmented).labelsHidden().fixedSize()
+                .help("Press Tab to switch between Wand and Object")
             }
             if session.tool == .lasso {
                 Picker("Lasso", selection: Binding(get: { session.lassoKind }, set: { kind in
@@ -33,11 +43,12 @@ struct LassoControls: View {
             }
             .pickerStyle(.segmented).labelsHidden().fixedSize()
             .help("Hold Shift to add or Option to subtract for one outline")
-            if session.tool == .wand { wandControls }
+            if session.tool == .wand, session.wandMode == .wand { wandControls }
+            if session.tool == .wand, session.wandMode == .object { objectSelectionControls }
             // Rectangles snap to whole pixels, so smoothing doesn't apply (as in Photoshop); ellipses curve.
             if session.tool == .lasso || session.tool == .wand || (session.tool == .marquee && session.marqueeKind == .ellipse) {
                 Toggle("Anti-alias", isOn: $session.selectionAntialiased)
-                    .help("Smooth selection edges; turn off for hard pixel edges")
+                    .help(session.tool == .wand && session.wandMode == .object ? "Smooth the detected object outline; turn off for the raw pixel mask" : "Smooth selection edges; turn off for hard pixel edges")
             }
             Divider().frame(height: 18)
             modifyControl("Expand", help: "Expand the selection by this many pixels", amount: $session.selectionExpandAmount) {
@@ -45,6 +56,19 @@ struct LassoControls: View {
             }
             modifyControl("Contract", help: "Contract the selection by this many pixels", amount: $session.selectionContractAmount) {
                 session.contractSelection(by: session.selectionContractAmount)
+            }
+            // Softens the selection's edge, as Select → Feather does.
+            HStack(spacing: 5) {
+                Button("Feather") { session.featherSelection(by: session.selectionFeatherAmount) }
+                    .disabled(!session.canModifySelection)
+                    .help("Fade the edge of the selection by this many pixels")
+                TextField("Feather", value: Binding(get: { Double(session.selectionFeatherAmount) },
+                                                    set: { session.selectionFeatherAmount = $0.isFinite ? Int(min(250, max(1, $0))) : 2 }),
+                          format: .number.precision(.fractionLength(0)))
+                    .frame(width: 48).textFieldStyle(.roundedBorder).multilineTextAlignment(.trailing)
+                    .arrowSteps(value: { Double(session.selectionFeatherAmount) },
+                                change: { session.selectionFeatherAmount = Int(min(250, max(1, $0))) })
+                    .unitSuffix("px")
             }
             Spacer(minLength: 0)
             if let selection = session.selection {
@@ -86,10 +110,36 @@ struct LassoControls: View {
         }
     }
 
+    private var objectSelectionControls: some View {
+        HStack(spacing: 12) {
+            Picker("Sample", selection: $session.objectSelectionSettings.sampleAllLayers) {
+                Text("This Layer").tag(false)
+                Text("All Layers").tag(true)
+            }
+            .pickerStyle(.segmented).labelsHidden().fixedSize()
+            .help("Analyze the active layer only, or every visible layer as shown")
+            HStack(spacing: 6) {
+                Text("Edge")
+                TextField("Edge", value: Binding(get: { session.objectSelectionSettings.edgeOffset },
+                                                 set: { session.objectSelectionSettings.edgeOffset = min(10, max(-10, $0)) }),
+                          format: .number)
+                    .frame(width: 40).textFieldStyle(.roundedBorder)
+                    .multilineTextAlignment(.trailing)
+                    .arrowSteps(value: { Double(session.objectSelectionSettings.edgeOffset) },
+                                change: { session.objectSelectionSettings.edgeOffset = Int(min(10, max(-10, $0.rounded()))) })
+                    .unitSuffix("px")
+            }
+            // The bar squeezes text before controls, so without this the label and unit collapse to
+            // nothing the moment a selection adds its own buttons, leaving an unlabelled number box.
+            .fixedSize()
+            .help("Positive values tighten the detected mask inward; negative values expand it outward")
+        }
+    }
+
     /// A button plus its pixel amount (1–500, default 1); both disabled without a selection.
     private func modifyControl(_ title: LocalizedStringKey, help: LocalizedStringKey, amount: Binding<Int>,
                                action: @escaping () -> Void) -> some View {
-        HStack(spacing: 6) {
+        HStack(spacing: 5) {
             Button(title, action: action)
             TextField(title, value: Binding(get: { amount.wrappedValue },
                                             set: { amount.wrappedValue = min(500, max(1, $0)) }),
@@ -123,6 +173,90 @@ struct PolygonalLassoToolIcon: View {
             rope.addLines([point(11.6, 14.5), point(12.9, 17.3)])
             let style = StrokeStyle(lineWidth: 1.4 * unit, lineCap: .round, lineJoin: .round)
             for part in [loop, knot, rope] { context.stroke(part, with: .foreground, style: style) }
+        }
+        .accessibilityHidden(true)
+    }
+}
+
+/// Selection modifiers share the filter panels' floating window and control layout.
+struct SelectionAmountSheet: View {
+    let session: EditorSession
+    let operation: EditorSession.SelectionAmountOperation
+    @State private var input: String
+    @FocusState private var focused: Bool
+
+    init(session: EditorSession, operation: EditorSession.SelectionAmountOperation) {
+        self.session = session
+        self.operation = operation
+        let amount: Int
+        switch operation {
+        case .expand: amount = session.selectionExpandAmount
+        case .contract: amount = session.selectionContractAmount
+        case .feather: amount = session.selectionFeatherAmount
+        }
+        _input = State(initialValue: String(amount))
+    }
+
+    private var maximum: Int { operation == .feather ? 250 : 500 }
+    private var amount: Int? {
+        guard let value = Int(input.trimmingCharacters(in: .whitespacesAndNewlines)),
+              (1...maximum).contains(value) else { return nil }
+        return value
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack(spacing: 10) {
+                Text("Amount").frame(minWidth: 60, alignment: .leading)
+                Slider(value: Binding(get: { Double(amount ?? 1) },
+                                      set: { input = String(Int($0.rounded())) }),
+                       in: 1...Double(maximum), step: 1)
+                TextField("Amount", text: $input)
+                    .frame(width: 56).textFieldStyle(.roundedBorder)
+                    .multilineTextAlignment(.trailing).focused($focused)
+                    .unitSuffix("px")
+            }
+            Text("Enter a whole number from 1 to \(maximum) px.")
+                .font(.callout).foregroundStyle(.secondary)
+                .opacity(amount == nil ? 1 : 0)
+            Divider()
+            HStack {
+                Button("Cancel") { session.selectionAmountOperation = nil }
+                    .configuredNativeShortcut(.escape)
+                Spacer()
+                Button("OK") {
+                    if let amount { session.confirmSelectionAmount(amount) }
+                }
+                .configuredNativeShortcut(.return).buttonStyle(.borderedProminent)
+                .disabled(amount == nil)
+            }
+        }
+        .padding(24).frame(width: 380).fixedSize()
+        .onAppear { focused = true }
+    }
+}
+
+struct ObjectSelectionToolIcon: View {
+    var body: some View {
+        Canvas { context, size in
+            let unit = size.width / 18
+            func point(_ x: CGFloat, _ y: CGFloat) -> CGPoint { CGPoint(x: x * unit, y: y * unit) }
+            let style = StrokeStyle(lineWidth: 1.6 * unit, lineCap: .round, lineJoin: .round)
+            for corners in [
+                [point(2, 6), point(2, 2), point(6, 2)],
+                [point(12, 2), point(16, 2), point(16, 6)],
+                [point(16, 12), point(16, 16), point(12, 16)],
+                [point(6, 16), point(2, 16), point(2, 12)]
+            ] {
+                var corner = Path()
+                corner.addLines(corners)
+                context.stroke(corner, with: .foreground, style: style)
+            }
+            var cursor = Path()
+            cursor.addLines([point(7, 5), point(7, 14), point(9.6, 11.7), point(11.3, 15.3),
+                             point(13.2, 14.4), point(11.5, 10.9), point(14.5, 10.9)])
+            cursor.closeSubpath()
+            context.fill(cursor, with: .foreground)
         }
         .accessibilityHidden(true)
     }

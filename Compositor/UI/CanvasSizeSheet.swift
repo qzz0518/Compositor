@@ -109,12 +109,12 @@ struct CanvasSizeSheet: View {
                 ColorPicker("Extension color", selection: $customColor, supportsOpacity: false)
             }
             HStack {
-                Button("Cancel") { finish(nil) }.keyboardShortcut(.cancelAction)
+                Button("Cancel") { finish(nil) }.configuredNativeShortcut(.escape)
                 Spacer()
                 Button("OK") {
                     guard draft.valid else { return }
                     finish(CanvasSizeOptions(width: Int(draft.width.rounded()), height: Int(draft.height.rounded()), anchor: anchor, fill: fill))
-                }.keyboardShortcut(.defaultAction).disabled(!draft.valid)
+                }.configuredNativeShortcut(.return).disabled(!draft.valid)
             }
         }.textFieldStyle(.roundedBorder).padding(24).frame(width: 450)
     }

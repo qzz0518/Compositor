@@ -37,7 +37,7 @@ struct NewCanvasSheet: View {
                     if let onCreate { onCreate(w, h) }
                     else { session.createDocument(width: w, height: h, emptyLayer: true) }
                 }
-                .keyboardShortcut(.defaultAction).buttonStyle(.borderedProminent)
+                .configuredNativeShortcut(.return).buttonStyle(.borderedProminent)
                 .disabled(!valid).accessibilityIdentifier("createCanvas")
             }
         }

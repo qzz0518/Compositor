@@ -5,6 +5,9 @@ nonisolated enum MaskTracing {
     /// Outline of a mask's pixels darker than 50% gray.
     static func darkPixels(in image: CGImage) -> CGPath? { trace(image, alpha: false) { $0 < 128 } }
 
+    /// Outline of a mask's pixels lighter than 50% gray — what a mask shows.
+    static func whitePixels(in image: CGImage) -> CGPath? { trace(image, alpha: false) { $0 >= 128 } }
+
     /// Outline of an image's pixels that are at least 50% opaque.
     static func opaquePixels(in image: CGImage) -> CGPath? { trace(image, alpha: true) { $0 >= 128 } }
 

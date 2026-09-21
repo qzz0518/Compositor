@@ -10,7 +10,9 @@ struct ContentView: View {
     @State private var canvasFrame: CGRect = .zero
     @State private var levelsPanel = FloatingPanelController(name: "levelsPanel")
     @State private var adjustmentPanel = FloatingPanelController(name: "adjustmentPanel")
+    @State private var selectionAmountPanel = FloatingPanelController(name: "selectionAmountPanel")
     @State private var filterPanel = FloatingPanelController(name: "filterPanel")
+    @State private var effectsPanel = FloatingPanelController(name: "effectsPanel")
     @State private var isDropTargeted = false
     /// The window's width, so the tab strip can use the toolbar's free space.
     @State private var windowWidth: CGFloat = 1180
@@ -20,35 +22,11 @@ struct ContentView: View {
         return workspace.canReceiveDrag(into: workspace.current.id)
     }
     var body: some View {
-        editorLayout
+        panelHandlers(editorLayout)
         .onAppear { applicationDelegate?.showEditor = { openWindow(id: "editor") } }
         .preferredColorScheme(.dark)
         .navigationTitle(session.projectURL?.deletingPathExtension().lastPathComponent ?? String(localized: "Untitled"))
         .toolbar { editorToolbar }
-        .onChange(of: session.levels == nil) { _, closed in
-            if closed { levelsPanel.close() }
-            else {
-                levelsPanel.onClose = { session.cancelLevels() }
-                levelsPanel.show(title: String(localized: "Levels"), content: LevelsSheet(session: session))
-            }
-        }
-        .onChange(of: session.hueSaturation == nil) { _, closed in
-            if closed { adjustmentPanel.close() }
-            else {
-                adjustmentPanel.onClose = { session.cancelHueSaturation() }
-                adjustmentPanel.show(title: String(localized: "Hue/Saturation"), content: HueSaturationSheet(session: session))
-            }
-        }
-        .onChange(of: session.filterEdit == nil) { _, closed in
-            if closed { filterPanel.close() }
-            else {
-                filterPanel.onClose = { session.cancelFilter() }
-                filterPanel.show(title: session.filterEdit?.kind.localizedName ?? String(localized: "Filter"), content: FilterSheet(session: session))
-            }
-        }
-        .onChange(of: session.document == nil) { _, empty in
-            if !empty { session.canvasFocusRequest += 1 }
-        }
         .fileImporter(isPresented: $session.showsImporter,
                       allowedContentTypes: [.jpeg, .png, .heic, .tiff], allowsMultipleSelection: true) { result in
             switch result {
@@ -70,7 +48,57 @@ struct ContentView: View {
                 Button("OK") { session.cropError = nil }
             } message: { Text(session.cropError ?? "") }
     }
-    /// The editor itself, split from `body` so each half type-checks in reasonable time.
+    /// Opens and closes the floating panels as their editing state changes. Split from `body` so each part
+    /// type-checks in reasonable time.
+    private func panelHandlers(_ content: some View) -> some View {
+        content
+        .onChange(of: session.levels == nil) { _, closed in
+            if closed { levelsPanel.close() }
+            else {
+                levelsPanel.onClose = { session.cancelLevels() }
+                levelsPanel.show(title: String(localized: "Levels"), content: LevelsSheet(session: session))
+            }
+        }
+        .onChange(of: session.hueSaturation == nil) { _, closed in
+            if closed { adjustmentPanel.close() }
+            else {
+                adjustmentPanel.onClose = { session.cancelHueSaturation() }
+                adjustmentPanel.show(title: String(localized: "Hue/Saturation"), content: HueSaturationSheet(session: session))
+            }
+        }
+        .onChange(of: session.effectsEditing) { _, selection in
+            if let selection {
+                effectsPanel.onClose = { session.finishEffectsEditing(commit: false) }
+                effectsPanel.show(title: selection.kind.localizedName, content: EffectsSheet(session: session, kind: selection.kind))
+            } else { effectsPanel.close() }
+        }
+        .onChange(of: session.document?.layers) { _, layers in
+            if let editing = session.effectsEditing,
+               layers?.first(where: { $0.id == editing.layerID })?.effects?.contains(editing.kind) != true {
+                if let picker = session.colorPicker, case .effect = picker.target { session.closeColorPicker(commit: false) }
+                session.effectsEditing = nil
+                session.effectsEditingOriginal = nil
+            }
+        }
+        .onChange(of: session.selectionAmountOperation) { _, operation in
+            if let operation {
+                selectionAmountPanel.onClose = { session.selectionAmountOperation = nil }
+                selectionAmountPanel.show(title: String(localized: "\(operation.localizedName) Selection"),
+                    content: SelectionAmountSheet(session: session, operation: operation))
+            } else { selectionAmountPanel.close() }
+        }
+        .onChange(of: session.filterEdit == nil) { _, closed in
+            if closed { filterPanel.close() }
+            else {
+                filterPanel.onClose = { session.cancelFilter() }
+                filterPanel.show(title: session.filterEdit?.kind.localizedName ?? String(localized: "Filter"), content: FilterSheet(session: session))
+            }
+        }
+        .onChange(of: session.document == nil) { _, empty in
+            if !empty { session.canvasFocusRequest += 1 }
+        }
+    }
+    /// The editor itself, split from `body` so each part type-checks in reasonable time.
     private var editorLayout: some View {
         VStack(spacing: 0) {
             if session.tool == .move {
@@ -87,6 +115,10 @@ struct ContentView: View {
             }
             if session.tool == .gradient {
                 GradientControls(session: session)
+                Divider()
+            }
+            if session.tool == .type {
+                TypeControls(session: session)
                 Divider()
             }
             if session.tool == .shape {
@@ -120,11 +152,26 @@ struct ContentView: View {
             HStack(spacing: 0) {
                 toolRail
                 Divider()
-                ZStack {
-                    EditorCanvas(session: session)
-                    if session.document == nil { welcome }
+                VStack(spacing: 0) {
+                    if session.showsRulers, session.document != nil {
+                        HStack(spacing: 0) {
+                            CanvasRulerCorner()
+                            CanvasRulerView(session: session, axis: .horizontal)
+                                .frame(height: CanvasRuler.thickness)
+                        }
+                    }
+                    HStack(spacing: 0) {
+                        if session.showsRulers, session.document != nil {
+                            CanvasRulerView(session: session, axis: .vertical)
+                                .frame(width: CanvasRuler.thickness)
+                        }
+                        ZStack {
+                            EditorCanvas(session: session)
+                            if session.document == nil { welcome }
+                        }
+                        .onGeometryChange(for: CGRect.self) { $0.frame(in: .named("editor")) } action: { canvasFrame = $0 }
+                    }
                 }
-                .onGeometryChange(for: CGRect.self) { $0.frame(in: .named("editor")) } action: { canvasFrame = $0 }
                 PanelResizeEdge(width: $layersPanelWidth, range: LayersPanel.widths)
                 LayersPanel(session: session, width: layersPanelWidth)
             }
@@ -224,6 +271,7 @@ struct ContentView: View {
                         if tool == .gradient { GradientToolIcon().frame(width: 18, height: 18) }
                         else if tool == .cloneStamp { CloneStampToolIcon().frame(width: 18, height: 18) }
                         else if tool == .lasso, session.lassoKind == .polygonal { PolygonalLassoToolIcon().frame(width: 18, height: 18) }
+                        else if tool == .wand, session.wandMode == .object { ObjectSelectionToolIcon().frame(width: 18, height: 18) }
                         // The Marquee's icon follows its shape: a dashed circle in Ellipse mode.
                         else { Image(systemName: tool == .marquee && session.marqueeKind == .ellipse ? "circle.dashed" : session.symbol(for: tool)).font(.system(size: 17)) }
                     }
@@ -285,7 +333,9 @@ struct ContentView: View {
                 ? String(localized: "Drag an ellipse · Shift add · Option subtract · Shift again mid-drag circle · Drag inside to move · Delete clears · ⌘D deselect")
                 : String(localized: "Drag a rectangle · Shift add · Option subtract · Shift again mid-drag square · Drag inside to move · ⌘-drag moves pixels · Delete clears · ⌘D deselect")
         case .wand:
-            String(localized: "Click to select similar colors · Shift add · Option subtract · Drag inside to move · ⌘-drag moves pixels · Delete clears · ⌘D deselect")
+            session.wandMode == .object
+                ? String(localized: "Click an object to select its outline · Tab for Wand · Shift add · Option subtract · Drag inside to move · ⌘-drag moves pixels · Delete clears · ⌘D deselect")
+                : String(localized: "Click to select similar colors · Tab for Object · Shift add · Option subtract · Drag inside to move · ⌘-drag moves pixels · Delete clears · ⌘D deselect")
         case .lasso:
             session.lassoKind == .freehand
                 ? String(localized: "Drag to select · Drag inside to move · Shift add · Option subtract · Delete clears · ⌥⌫/⌘⌫ fill · ⌘D deselect")
@@ -304,10 +354,14 @@ struct ContentView: View {
             String(localized: "Option-click to set the source · Drag to clone · [ ] size · Shift-[ ] hardness · 1–0 opacity · Space to pan")
         case .spotHealing:
             String(localized: "Drag over blemishes to heal · [ ] size · Shift-[ ] hardness · Escape cancel · Space to pan")
+        case .type:
+            String(localized: "Drag a text box · Click text to edit · Drag box handles to resize · ⌘Return finish · Escape cancel")
         case .shape:
-            session.shapeKind == .rectangle
-                ? String(localized: "Drag to draw a shape on a new layer · Shift square · Option from center · Shift-U ellipse · Escape cancel · Space to pan")
-                : String(localized: "Drag to draw a shape on a new layer · Shift circle · Option from center · Shift-U rectangle · Escape cancel · Space to pan")
+            switch session.shapeKind {
+            case .line: String(localized: "Drag to draw a shape on a new layer · Shift 45° · Option from center · Shift-U or Tab for the next shape · Escape cancel · Space to pan")
+            case .rectangle: String(localized: "Drag to draw a shape on a new layer · Shift square · Option from center · Shift-U or Tab for the next shape · Escape cancel · Space to pan")
+            default: String(localized: "Drag to draw a shape on a new layer · Shift circle · Option from center · Shift-U or Tab for the next shape · Escape cancel · Space to pan")
+            }
         case .gradient:
             String(localized: "Drag to draw · Drag ends to adjust · Shift 45° · 1–0 opacity · Enter apply · Escape cancel")
         case .crop: String(localized: "Drag to crop · Enter apply · Escape cancel · Space to pan")
@@ -376,7 +430,10 @@ extension View {
     func listen(step: Double) {
         guard monitor == nil else { return }
         monitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            guard let self, self.editing, event.keyCode == 126 || event.keyCode == 125 else { return event }
+            // Only while a field really is being edited: a field left behind (its tool bar swapped out, say) must not
+            // keep taking Up and Down from the canvas, where they nudge the layer.
+            guard let self, self.editing, event.keyCode == 126 || event.keyCode == 125,
+                  NSApp.keyWindow?.firstResponder is NSTextView else { return event }
             let amount = step * (event.modifierFlags.contains(.shift) ? 10 : 1)
             self.change(self.value() + (event.keyCode == 126 ? amount : -amount))
             return nil
