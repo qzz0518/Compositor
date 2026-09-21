@@ -3,13 +3,13 @@
   <channel>
     <title>Compositor</title>
     <item>
-      <title>Version 1.0.4</title>
-      <pubDate>Sat, 19 Sep 2026 08:03:18 +0000</pubDate>
-      <sparkle:version>6</sparkle:version>
-      <sparkle:shortVersionString>1.0.4</sparkle:shortVersionString>
+      <title>Version 1.1.8</title>
+      <pubDate>Mon, 21 Sep 2026 13:49:48 +0000</pubDate>
+      <sparkle:version>14</sparkle:version>
+      <sparkle:shortVersionString>1.1.8</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
-      <link>https://github.com/qzz0518/Compositor/releases/tag/v1.0.4-zh.6</link>
-      <enclosure url="https://github.com/qzz0518/Compositor/releases/download/v1.0.4-zh.6/Compositor.dmg" sparkle:edSignature="uqoqEsUE9jXMOjNgw+pi/92L789wZN7Bluzm7kt/ZmOT4CvKHTNgkLbB8tsmSoH8UnMk1BZ8N66pjStqhzxZBA==" length="7222861" type="application/octet-stream"/>
+      <link>https://github.com/qzz0518/Compositor/releases/tag/v1.1.8-zh.14</link>
+      <enclosure url="https://github.com/qzz0518/Compositor/releases/download/v1.1.8-zh.14/Compositor.dmg" sparkle:edSignature="aWkT8tSkf3EcqgIzYbDThz4PmWHGng56zPkN90bGszSMzx44dnTdTImWoZx+fWXSo2lO21WjLZiscarTIJ0oCA==" length="7912901" type="application/octet-stream"/>
     </item>
   </channel>
 </rss>
